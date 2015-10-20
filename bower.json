@@ -1,0 +1,26 @@
+{
+  "name": "react-demos",
+  "description": "react demos",
+  "main": "index.js",
+  "authors": [
+    "superlin"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "react",
+    "demos"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "~0.14.0"
+  }
+}
