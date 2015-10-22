@@ -1,3 +1,6 @@
 {
-  "esnext": true
+  "browser": true,
+  "node": true,
+  "esnext": true,
+  "globals": { "React": true }
 }

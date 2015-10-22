@@ -1,6 +1,4 @@
-var headers = [
-  "Book", "Author", "Language", "Published", "Sales"
-];
+var headers = [ "Book", "Author", "Language", "Published", "Sales" ];
 
 var data=[
   ["The Lord of the Rings", "J. R. R. Tolkien","English", "1954–1955", "150 million"],
@@ -101,16 +99,17 @@ var Excel = React.createClass({
       return null;
     }
     return (
-      React.DOM.tr({onChange: this._search},
+      <tr onChange={this._search}>
+      {
         this.props.headers.map(function(_ignore, idx) {
-          return React.DOM.td({key: idx},
-            React.DOM.input({
-              type: 'text',
-              'data-idx': idx,
-            })
+          return (
+            <td key={idx}>
+              <input type="text" data-idx={idx}/>
+            </td>
           );
         })
-      )
+      }
+      </tr>
     );
   },
   _download: function (format, ev) {
@@ -127,77 +126,74 @@ var Excel = React.createClass({
     ev.target.download = 'data.' + format;
   },
   _renderToolbar: function() {
-    return React.DOM.div({className: 'toolbar'},
-      React.DOM.button({
-        onClick: this._toggleSearch
-      }, 'Search'),
-      React.DOM.a({
-        onClick: this._download.bind(this, 'json'),
-        href: 'data.json'
-      }, 'Export JSON'),
-      React.DOM.a({
-        onClick: this._download.bind(this, 'csv'),
-        href: 'data.csv'
-      }, 'Export CSV')
+    return (
+      <div className="toolbar">
+        <button onClick={this._toggleSearch}>Search</button>
+        <a onClick={this._download.bind(this, 'json')}>Export JSON</a>
+        <a onClick={this._download.bind(this, 'csv')}>Export CSV</a>
+      </div>
     );
   },
   _renderTable: function() {
     var self = this;
-    return React.DOM.table(null,
-      React.DOM.thead({onClick: self._sort},
-        React.DOM.tr(null,
-          self.props.headers.map(function(title, idx) {
-            if (self.state.sortby === idx) {
-              title += self.state.descending ? ' \u2191' : ' \u2193';
-            }
-            return React.DOM.th({key: idx}, title);
-          })
-        )
-      ),
-      React.DOM.tbody({onDoubleClick: self._showEditor},
-        self._renderSearch(),
-        self.state.data.map(function(row, rowidx) {
-          return (
-            React.DOM.tr({key: rowidx},
-              row.map(function (cell, idx) {
-                var content = cell;
-                var edit = self.state.edit;
+    return (
+      <table>
+        <thead onClick={self._sort}>
+          <tr>
+          {
+            self.props.headers.map(function(title, idx) {
+              if (self.state.sortby === idx) {
+                title += self.state.descending ? ' \u2191' : ' \u2193';
+              }
+              return (<th key={idx}>{title}</th>);
+            })
+          }
+          </tr>
+        </thead>
+        <tbody onDoubleClick={self._showEditor}>
+        {
+          self._renderSearch(),
+          self.state.data.map(function(row, rowidx) {
+            return (
+              <tr key={rowidx}>
+              {
+                row.map(function (cell, idx) {
+                  var content = cell;
+                  var edit = self.state.edit;
 
-                if (edit && edit.row === rowidx && edit.cell === idx) {
-                  content = React.DOM.form({onSubmit: self._save},
-                    React.DOM.input({
-                      type: 'text',
-                      defaultValue: content
-                    })
+                  if (edit && edit.row === rowidx && edit.cell === idx) {
+                    content = (
+                      <form onSubmit={self._save}>
+                        <input type="text" defaultValue={content}/>
+                      </form>
+                    );
+                  }
+
+                  return (
+                    <td key={idx} data-row={rowidx} >{content}</td>
                   );
-                }
-
-                return React.DOM.td({
-                  key: idx,
-                  'data-row': rowidx
-                }, content);
-              })
-            )
-          );
-        })
-      )
+                })
+              }
+              </tr>
+            );
+          })
+        }
+        </tbody>
+      </table>
     );
   },
   render: function () {
     var self = this;
     return (
-      React.DOM.div(null,
-        this._renderToolbar(),
-        this._renderTable()
-      )
+      <div>
+        {this._renderToolbar()}
+        {this._renderTable()}
+      </div>
     );
   }
 });
 
 React.render(
-  React.createElement(Excel, {
-    headers: headers,
-    initialData: data
-  }),
+  <Excel headers={headers} initialData={data}></Excel>,
   document.getElementById("app")
 );
